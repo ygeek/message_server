@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+    message_server_mysql:
+        image: mysql
+        command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+        environment:
+            - MYSQL_ROOT_PASSWORD=my_root_password_xxx
+            - MYSQL_DATABASE=message_server
+        deploy:
+            placement:
+                constraints:
+                    - node.labels.type == message_mysql
+
+    message_server:
+        image: visionpsn/message_server
+        depends_on:
+            - message_server_mysql
+        environment:
+            - LANG=C.UTF-8
+            - MYSQL_ENV_MYSQL_ROOT_PASSWORD=my_root_password_xxx
+        ports:
+            - "8011:80"
+
